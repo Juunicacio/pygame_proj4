@@ -5,59 +5,139 @@ def drawRectangle(window, color, xposition, yposition, width, height):
     rect = pygame.draw.rect(window, color, (xposition, yposition, width, height))
     return rect
 
-def checkForPlayerEvents(player, window):
+def checkForPlayerEvents(window, player):#, keyup=None):
     keys = pygame.key.get_pressed()
     if keys:
         try:
+            # Moving
             if keys[pygame.K_a] and (player.x > player.vel):
-                player.updateX(-player.vel)
-                #player.update(x, -player.vel)
-                #player.x -= player.vel
-                player.updateSleeping(False)
-                #player.sleeping = False
-                player.updateResting(False)
-                #player.resting = False
-                player.resetSleepingCount(0)
-                #player.sleepingCount = 0
-                player.resetIdleCount(0)
-                #player.idleCount = 0        
+                player.x -= player.vel               
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = False
+                player.sleeping = False
+                player.goingLeft = True
+                player.goingRight = False                    
                 
             elif keys[pygame.K_d] and (player.x < window.get_width() - player.width - player.vel):
-                player.updateX(player.vel)
-                #player.update(x, player.vel)
-                #player.x += player.vel
-                player.updateSleeping(False)
-                player.updateResting(False)
-                player.resetSleepingCount(0)
-                player.resetIdleCount(0)
+                player.x += player.vel
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = False
+                player.sleeping = False
+                player.goingLeft = False
+                player.goingRight = True
                 
             elif keys[pygame.K_w] and (player.y > player.vel):
-                player.updateY(-player.vel)
-                #player.update(y, -player.vel)
-                #player.y -= player.vel
-                player.updateSleeping(False)
-                player.updateResting(False)
-                player.resetSleepingCount(0)
-                player.resetIdleCount(0)
+                player.y -= player.vel
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = False
+                player.sleeping = False
+                player.goingLeft = False
+                player.goingRight = False
                 
             elif keys[pygame.K_s] and (player.y < window.get_height() - player.height - player.vel):
-                player.updateY(player.vel)
-                #player.update(y, player.vel)
-                #player.y += player.vel
-                player.updateSleeping(False)
-                player.updateResting(False)
-                player.resetSleepingCount(0)
-                player.resetIdleCount(0)
-                
+                player.y += player.vel
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = False
+                player.sleeping = False
+                player.goingLeft = False
+                player.goingRight = False
+            
+            # Standing                
             elif keys[pygame.K_p]:
-                player.updateSleeping(True)
-                player.resetWalkCount(0)
-        
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = False
+                player.sleeping = True
+                player.goingLeft = False
+                player.goingRight = False
+            
+            elif keys[pygame.K_y]:
+                player.resting = False
+                player.yesKnocking = True
+                player.noKnocking = False
+                player.sleeping = True
+                player.goingLeft = False
+                player.goingRight = False             
+            
+            elif keys[pygame.K_n]:
+                player.resting = False
+                player.yesKnocking = False
+                player.noKnocking = True
+                player.sleeping = False
+                player.goingLeft = False
+                player.goingRight = False        
         except:
             return False
+    # if keyup != None:
+    #     if keyup == pygame.K_a or keyup == pygame.K_d or keyup == pygame.K_w or keyup == pygame.K_s:
+    #         player.resting = True
+    #         player.yesKnocking = False
+    #         player.noKnocking = False
+    #         player.sleeping = False
+    #         player.goingLeft = False
+    #         player.goingRight = False
     else:
-        player.updateResting(True)
-        player.resetWalkCount(0)
+        # Breathing
+        player.resting = True
+        player.yesKnocking = False
+        player.noKnocking = False
+        player.sleeping = False
+        player.goingLeft = False
+        player.goingRight = False
+
+def drawRestingAnimation(window, player):
+    #if player.resting:
+    #window.blit(player.restingImgs[player.idleCount//3], (player.x,player.y))
+    window.blit(player.restingImgs[player.idleCount], (player.x,player.y))
+    player.idleCount += 1
+    if player.idleCount + 1 >= len(player.restingImgs):
+        player.idleCount = 0
+
+def drawYesKnockingAnimation(window, player):
+    if player.yesKnocking:
+        #window.blit(player.yesKnockingImgs[player.yesKnockCount//3], (player.x,player.y))
+        window.blit(player.yesKnockingImgs[player.yesKnockCount], (player.x,player.y))
+        player.yesKnockCount += 1
+    if player.yesKnockCount + 1 >= len(player.yesKnockingImgs):
+        player.yesKnockCount = 0
+
+def drawNoKnockingAnimation(window, player):
+    if player.noKnocking:
+        #window.blit(player.noKnockingImgs[player.noKnockCount//3], (player.x,player.y))
+        window.blit(player.noKnockingImgs[player.noKnockCount], (player.x,player.y))
+        player.noKnockCount += 1
+    if player.noKnockCount + 1 >= len(player.noKnockingImgs):
+        player.noKnockCount = 0
+
+def drawSleepingAnimation(window, player):
+    if player.sleeping:
+        #window.blit(player.sleepingImgs[player.sleepingCount//3], (player.x,player.y))
+        window.blit(player.sleepingImgs[player.sleepingCount], (player.x,player.y))
+        print(player.sleepingImgs[1])
+        print(player.sleepingImgs[2])
+        player.sleepingCount += 1
+    if player.sleepingCount + 1 >= len(player.sleepingImgs):
+        player.sleepingCount = 0
+
+def drawGoingLeftAnimation(window, player):
+    if player.goingLeft:
+        #window.blit(player.goingLeftImgs[player.walkCount//3], (player.x,player.y))
+        window.blit(player.goingLeftImgs[player.walkCount], (player.x,player.y))
+        player.walkCount += 1
+    if player.walkCount + 1 >= len(player.goingLeftImgs):
+        player.walkCount = 0
+
+def drawGoingRightAnimation(window, player):
+    if player.goingRight:
+        #window.blit(player.goingRightImgs[player.walkCount//3], (player.x,player.y))
+        window.blit(player.goingRightImgs[player.walkCount], (player.x,player.y))
+        player.walkCount += 1
+    if player.walkCount + 1 >= len(player.goingRightImgs):
+        player.walkCount = 0
 
 def showPalette(window, chose_palette):
     # to draw palette colors on the screen
@@ -79,7 +159,6 @@ def accessAssetsFolder(folderName=''):
         return FOLDER_INSIDE_ASSETS_FOLDER
 
 def createListOfAnimatedImgs(folderNameInAssetsFolder, action):
-    #print(len([name for name in os.listdir(folderNameInAssetsFolder)]))
     i = 1
     listOfActionImgs = []
     #actionsCount = (len(os.listdir(folderNameInAssetsFolder)))
