@@ -24,9 +24,9 @@ tile_size = 64
 # level data
 world_data = [
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,3,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [1,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -69,15 +69,14 @@ def redrawGameWindow(win, man1, house1, mainFont, house2, femaleNPC, world):
     #showPalette(win, chose_palette_game)
 
     # draw grid
-    #draw_grid(win, colors_palette1["color6"], tile_size, WIDTH, HEIGHT)
-    
-    # draw path
-    world.drawPath(win)
-
+    draw_grid(win, colors_palette1["color6"], tile_size, WIDTH, HEIGHT)
     
     # draw house
     house1.drawHouse(win)
     house2.drawHouse(win)
+
+    # draw path
+    world.drawPath(win)
     
     # to draw player_rect on the screen
     #drawRectangle(win, man1.color, man1.x, man1.y, man1.width, man1.height)

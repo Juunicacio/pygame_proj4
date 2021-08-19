@@ -60,7 +60,7 @@ class GameTime:
                 print(f"{getfullBar} 5 minutes has passed, full bar")
             
         else:
-            print(f"{self.buttonSpawnTimer} out")
+            #print(f"{self.buttonSpawnTimer} out")
             GameTime.isSleeping = False
             GameTime.buttonPressed(GameTime)
         

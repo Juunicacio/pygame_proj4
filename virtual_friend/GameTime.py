@@ -40,20 +40,20 @@ class GameTime:
 
     def buttonGetTime(self, buttonName, playerAction):
         if playerAction == True:
-            print(f"{self.buttonSpawnTimer} in")
+            #print(f"{self.buttonSpawnTimer} in")
             GameTime.isSleeping = True
             #GameTime.buttonPressed(GameTime)            
             if GameTime.sameButton == False:
                 self.buttonSpawnTimer = (pygame.time.get_ticks())
-                print(self.buttonSpawnTimer) # this time when pressed button
+                #print(self.buttonSpawnTimer) # this time when pressed button
                 GameTime.sameButton = True
 
-            print(f"{pygame.time.get_ticks() - self.buttonSpawnTimer} COUNT!")
+            #print(f"{pygame.time.get_ticks() - self.buttonSpawnTimer} COUNT!")
             if (pygame.time.get_ticks() - self.buttonSpawnTimer) >= (self.buttonSpawnFrequency): # achieve 1min
                 print(f"{(self.buttonSpawnFrequency)} {self.stepsToFullBar} min has passed, + 10% of resting")
                 self.buttonSpawnFrequency = self.buttonSpawnFrequency + self.frequencyAchievement
-                print(self.buttonSpawnFrequency)
-                print(self.frequencyAchievement)
+                #print(self.buttonSpawnFrequency)
+                #print(self.frequencyAchievement)
                 self.stepsToFullBar +=1
                 
             if self.stepsToFullBar == 5:
@@ -63,7 +63,7 @@ class GameTime:
                 self.stepsToFullBar = 0
             
         else:
-            print(f"{self.buttonSpawnTimer} out")
+            #print(f"{self.buttonSpawnTimer} out")
             GameTime.isSleeping = False            
             GameTime.sameButton = False
             #GameTime.buttonPressed(GameTime)

@@ -13,33 +13,23 @@ class Character:
 
     def __init__(self, color):
         #self.direction = [0,0]
-        # dx and dy to change player direction
-        self.dx = 0
-        self.dy = 0
         self.x = 150
         self.y = 150
         self.width = 64
         self.height = 64
-        self.vel = 2
-
-        #self.negativeDirection = 1
-        #self.go = self.negativeDirection
-        
-        #self.speed = 1
-        #self.vel = 1 + self.speed
-
+        self.vel = 1
+        self.speed = 0
         self.color = color
 
         self.defaultImg = 'resting1.png'
         # self.imageRect = <surface(64x64x32 SW)> # pygame.image.load() returns a pygame.Surface()
-        self.image = createListOfAnimatedImgs(Character.PATH_FOR_RESTING_FOLDER, None, self.defaultImg, 'yes', 80, 80)
+        self.imageRect = createListOfAnimatedImgs(Character.PATH_FOR_RESTING_FOLDER, None, self.defaultImg)
         # self.hitBox = <rect(171, 164, 22, 22)>
-        self.hitBox = self.image.get_rect()
+        self.hitBox = self.imageRect.get_rect()
         # self.hitBox.x = self.x + 21
         # self.hitBox.y = self.y + 14
         # self.hitBox.width = 22
         # self.hitBox.height = 22
-        self.collided = False
 
         self.energy = 100
 
@@ -67,28 +57,28 @@ class Character:
 
         # Player Animations
         self.restingImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_RESTING_FOLDER, 'resting', None, 'yes', 80, 80)
+            Character.PATH_FOR_RESTING_FOLDER, 'resting')
         self.yesKnockingImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_YESKNOCKING_FOLDER, 'yesKnocking', None, 'yes', 80, 80)
+            Character.PATH_FOR_YESKNOCKING_FOLDER, 'yesKnocking')
         self.noKnockingImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_NOKNOCKING_FOLDER, 'noKnocking', None, 'yes', 80, 80)
+            Character.PATH_FOR_NOKNOCKING_FOLDER, 'noKnocking')
         self.sleepingImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_SLEEPING_FOLDER, 'sleeping', None, 'yes', 80, 80)
+            Character.PATH_FOR_SLEEPING_FOLDER, 'sleeping')
         self.goingLeftImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_GOING_LEFT_FOLDER, 'goingLeft', None, 'yes', 80, 80)
+            Character.PATH_FOR_GOING_LEFT_FOLDER, 'goingLeft')
         self.goingRightImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_GOING_RIGHT_FOLDER, 'goingRight', None, 'yes', 80, 80)
+            Character.PATH_FOR_GOING_RIGHT_FOLDER, 'goingRight')
         self.goingDownImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_GOING_DOWN_FOLDER, 'goingDown', None, 'yes', 80, 80)
+            Character.PATH_FOR_GOING_DOWN_FOLDER, 'goingDown')
         self.goingUpImgs = createListOfAnimatedImgs(
-            Character.PATH_FOR_GOING_UP_FOLDER, 'goingUp', None, 'yes', 80, 80)
+            Character.PATH_FOR_GOING_UP_FOLDER, 'goingUp')
     
     #------------ Each Animation Per Time -----------------------------------------
     def drawRestingAnimation(self, window):
         #if self.resting:
         window.blit(self.restingImgs[self.idleCount//self.spritesDelay], (self.x,self.y))
         #window.blit(self.restingImgs[self.idleCount], (self.x,self.y))
-        self.drawCollider(window, self.restingImgs, self.idleCount, self.spritesDelay)
+        self.collide(window, self.restingImgs, self.idleCount, self.spritesDelay)
         #self.rect.x = self.x
         #self.rect.y = self.y
         #print(self.rect)
@@ -103,7 +93,7 @@ class Character:
         if self.yesKnocking:
             window.blit(self.yesKnockingImgs[self.yesKnockCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.yesKnockingImgs[self.yesKnockCount], (self.x,self.y))
-            self.drawCollider(window, self.yesKnockingImgs, self.yesKnockCount, self.spritesDelay)
+            self.collide(window, self.yesKnockingImgs, self.yesKnockCount, self.spritesDelay)
             self.yesKnockCount += 1
         if self.yesKnockCount + 1 >= len(self.yesKnockingImgs)*self.spritesDelay:
             self.yesKnockCount = 0
@@ -112,7 +102,7 @@ class Character:
         if self.noKnocking:
             window.blit(self.noKnockingImgs[self.noKnockCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.noKnockingImgs[self.noKnockCount], (self.x,self.y))
-            self.drawCollider(window, self.noKnockingImgs, self.noKnockCount, self.spritesDelay)
+            self.collide(window, self.noKnockingImgs, self.noKnockCount, self.spritesDelay)
             self.noKnockCount += 1
         if self.noKnockCount + 1 >= len(self.noKnockingImgs)*self.spritesDelay:
             self.noKnockCount = 0
@@ -122,7 +112,7 @@ class Character:
             # draw
             window.blit(self.sleepingImgs[self.sleepingCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.sleepingImgs[self.sleepingCount], (self.x,self.y))
-            self.drawCollider(window, self.sleepingImgs, self.sleepingCount, self.spritesDelay)
+            self.collide(window, self.sleepingImgs, self.sleepingCount, self.spritesDelay)
             self.sleepingCount += 1
         if self.sleepingCount + 1 >= len(self.sleepingImgs)*self.spritesDelay:
             self.sleepingCount = 0
@@ -131,7 +121,7 @@ class Character:
         if self.goingLeft:
             window.blit(self.goingLeftImgs[self.walkCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.goingLeftImgs[self.walkCount], (self.x,self.y))
-            self.drawCollider(window, self.goingLeftImgs, self.walkCount, self.spritesDelay)
+            self.collide(window, self.goingLeftImgs, self.walkCount, self.spritesDelay)
             self.walkCount += 1
         if self.walkCount + 1 >= len(self.goingLeftImgs)*self.spritesDelay:
             self.walkCount = 0
@@ -140,7 +130,7 @@ class Character:
         if self.goingRight:
             window.blit(self.goingRightImgs[self.walkCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.goingRightImgs[self.walkCount], (self.x,self.y))
-            self.drawCollider(window, self.goingRightImgs, self.walkCount, self.spritesDelay)
+            self.collide(window, self.goingRightImgs, self.walkCount, self.spritesDelay)
             self.walkCount += 1
         if self.walkCount + 1 >= len(self.goingRightImgs)*self.spritesDelay:
             self.walkCount = 0
@@ -149,7 +139,7 @@ class Character:
         if self.goingDown:
             window.blit(self.goingDownImgs[self.walkCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.goingRightImgs[self.walkCount], (self.x,self.y))
-            self.drawCollider(window, self.goingDownImgs, self.walkCount, self.spritesDelay)
+            self.collide(window, self.goingDownImgs, self.walkCount, self.spritesDelay)
             self.walkCount += 1
         if self.walkCount + 1 >= len(self.goingDownImgs)*self.spritesDelay:
             self.walkCount = 0
@@ -158,7 +148,7 @@ class Character:
         if self.goingUp:
             window.blit(self.goingUpImgs[self.walkCount//self.spritesDelay], (self.x,self.y))
             #window.blit(self.goingRightImgs[self.walkCount], (self.x,self.y))
-            self.drawCollider(window, self.goingUpImgs, self.walkCount, self.spritesDelay)
+            self.collide(window, self.goingUpImgs, self.walkCount, self.spritesDelay)
             self.walkCount += 1
         if self.walkCount + 1 >= len(self.goingUpImgs)*self.spritesDelay:
             self.walkCount = 0
@@ -184,7 +174,6 @@ class Character:
             self.drawRestingAnimation(window)
     
     def checkForKeyUp(self, event):
-        self.returnVelAfterHit()
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 self.resting = True
@@ -195,8 +184,6 @@ class Character:
                 self.goingRight = False
                 self.goingDown = False
                 self.goingUp = False
-                self.returnVelAfterHit()
-
             if event.key == pygame.K_d:
                 self.resting = True
                 self.yesKnocking = False
@@ -206,8 +193,6 @@ class Character:
                 self.goingRight = False
                 self.goingDown = False
                 self.goingUp = False
-                self.returnVelAfterHit()
-
             if event.key == pygame.K_w:
                 self.resting = True
                 self.yesKnocking = False
@@ -217,8 +202,6 @@ class Character:
                 self.goingRight = False
                 self.goingDown = False
                 self.goingUp = False
-                self.returnVelAfterHit()
-
             if event.key == pygame.K_s:
                 self.resting = True
                 self.yesKnocking = False
@@ -228,21 +211,14 @@ class Character:
                 self.goingRight = False
                 self.goingDown = False
                 self.goingUp = False
-                self.returnVelAfterHit()
-
-
-    # to press 2 keys at the same time, we need to use, 2 separated methods
-    #https://www.youtube.com/watch?v=yKv02lq7JHs
     
     def checkPressedKeys(self, window, keys):
+        #keys = pygame.key.get_pressed()
         if keys:
             try:
                 # Moving
                 if keys[pygame.K_a] and (self.x > self.vel):
-                    print(f'keys a, vel:{self.vel}')   
-                    #self.x -= self.vel
-                    self.dx -= self.vel
-                    # check for player collision and then move him
+                    self.x -= self.vel               
                     self.resting = False
                     self.yesKnocking = False
                     self.noKnocking = False
@@ -250,13 +226,10 @@ class Character:
                     self.goingLeft = True
                     self.goingRight = False
                     self.goingDown = False
-                    self.goingUp = False
-                    self.returnVelAfterHit() 
+                    self.goingUp = False              
                     
                 elif keys[pygame.K_d] and (self.x < window.get_width() - self.width - self.vel):
-                    print(f'keys d, vel: {self.vel}')         
-                    #self.x += self.vel
-                    self.dx += self.vel
+                    self.x += self.vel
                     self.resting = False
                     self.yesKnocking = False
                     self.noKnocking = False
@@ -265,12 +238,9 @@ class Character:
                     self.goingRight = True
                     self.goingDown = False
                     self.goingUp = False
-                    self.returnVelAfterHit()
                     
                 elif keys[pygame.K_w] and (self.y > self.vel):
-                    print(f'keys w, vel: {self.vel}')   
-                    #self.y -= self.vel
-                    self.dy -= self.vel
+                    self.y -= self.vel
                     self.resting = False
                     self.yesKnocking = False
                     self.noKnocking = False
@@ -279,12 +249,9 @@ class Character:
                     self.goingRight = False
                     self.goingDown = False
                     self.goingUp = True
-                    self.returnVelAfterHit()
                     
                 elif keys[pygame.K_s] and (self.y < window.get_height() - self.height - self.vel):
-                    print(f'keys s, vel: {self.vel}')        
-                    #self.y += self.vel
-                    self.dy += self.vel
+                    self.y += self.vel
                     self.resting = False
                     self.yesKnocking = False
                     self.noKnocking = False
@@ -293,7 +260,6 @@ class Character:
                     self.goingRight = False
                     self.goingDown = True
                     self.goingUp = False
-                    self.returnVelAfterHit()
                 
                 # Standing                
                 elif keys[pygame.K_p]:
@@ -305,7 +271,6 @@ class Character:
                     self.goingRight = False
                     self.goingDown = False
                     self.goingUp = False
-                    self.returnVelAfterHit()
                 
                 elif keys[pygame.K_y]:
                     self.resting = False
@@ -315,8 +280,7 @@ class Character:
                     self.goingLeft = False
                     self.goingRight = False
                     self.goingDown = False
-                    self.goingUp = False
-                    self.returnVelAfterHit()       
+                    self.goingUp = False          
                 
                 elif keys[pygame.K_n]:
                     self.resting = False
@@ -326,8 +290,7 @@ class Character:
                     self.goingLeft = False
                     self.goingRight = False
                     self.goingDown = False
-                    self.goingUp = False
-                    self.returnVelAfterHit()     
+                    self.goingUp = False     
             except:
                 return False
         else:
@@ -340,7 +303,6 @@ class Character:
             self.goingRight = False
             self.goingDown = False
             self.goingUp = False
-            self.returnVelAfterHit()
     
     def drawtexts(self, window, mainFont, color):
         self.energyLevel = mainFont.render(f"Energy: {self.energy}", 1, color)
@@ -350,28 +312,15 @@ class Character:
         #window.blit(self.imageRect, (window.get_width() - self.imageRect.get_width() - 10, 10))
         #window.blit(self.hitBox, (window.get_width() - self.hitBox.get_width() - 10, 10))
     
-    def drawCollider(self, window, imgFolder, count, spritesDelay):
+    def collide(self, window, imgFolder, count, spritesDelay):
         self.imageRect = imgFolder[count//spritesDelay]
         self.hitBox = self.imageRect.get_rect()
-        self.hitBox.center = self.width//2, self.height//2
-        # self.hitBox.x = self.x + 21
-        # self.hitBox.y = self.y + 14
-        # self.hitBox.width = 22
-        # self.hitBox.height = 22       
-        
+        self.hitBox.x = self.x + 21
+        self.hitBox.y = self.y + 14
+        self.hitBox.width = 22
+        self.hitBox.height = 22
         if imgFolder == self.goingRightImgs:
-            #self.hitBox.x = self.x + (self.hitBox.center[0]/.95)
-            self.hitBox.x = self.x + (self.hitBox.width/2.4)
-
-        else:
-            #self.hitBox.x = self.x + (self.hitBox.center[0]/1.15)
-            self.hitBox.x = self.x + (self.hitBox.width/2.8)
-        
-        #self.hitBox.y = self.y + (self.hitBox.center[1]/1.7)     
-        self.hitBox.y = self.y + (self.hitBox.height/4.3)       
-        self.hitBox.width = (self.hitBox.width/3)
-        self.hitBox.height = (self.hitBox.height/3)
-
+            self.hitBox.x = self.x + 25
         rectCollide(window, (255, 255, 255), (self.hitBox))
     
     def getHit(self):
@@ -379,9 +328,4 @@ class Character:
     
     # def checkForContacts(self, window, house1, house2, femaleNPC):
     #     # if the y coord of the character, is between the top and the bottom of the others objs rect
-    #     if self.y - radius <
-
-    def returnVelAfterHit(self):
-        if self.vel == -2:
-            self.vel = 2
-            self.collided = False
+    #     if self.y - radius < 

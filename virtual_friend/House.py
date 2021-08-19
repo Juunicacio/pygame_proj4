@@ -12,19 +12,25 @@ class House:
         self.houseName = fileName
         self.playersHouse = False
         self.houseKind = houseKind
+
+        #self.doorHitBox = None
+
+        self.imageRect = createListOfAnimatedImgs(House.PATH_FOR_ASSETS_FOLDER, None, self.houseName)
+        self.hitBox = self.imageRect.get_rect()
+        self.doorHitBox = self.imageRect.get_rect()
         
         self.houseImg = createListOfAnimatedImgs(
             House.PATH_FOR_ASSETS_FOLDER, None, self.houseName)
 
     def drawHouse(self, window):
         window.blit(self.houseImg, (self.x, self.y))
-        self.collide(window, self.houseImg)
+        self.drawCollider(window, self.houseImg)
     
     #def drawRectangle(window, color, xposition, yposition, width, height):
         #rect = pygame.draw.rect(window, color, (xposition, yposition, width, height))
         #return rect
 
-    def collide(self, window, img):
+    def drawCollider(self, window, img):
         self.imageRect = img
         self.hitBox = self.imageRect.get_rect()
         self.hitBox.x = self.x
@@ -53,3 +59,6 @@ class House:
             rectCollide(window, (255, 255, 255), (self.doorHitBox))
             #drawRectangle(window, color, xposition, yposition, width, height)
             rectCollide(window, (255, 255, 255), (self.hitBox))
+    
+    def getHit(self):
+        print('House hit')
